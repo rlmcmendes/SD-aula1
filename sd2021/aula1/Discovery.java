@@ -96,8 +96,9 @@ public class Discovery {
 							URIClass u=new URIClass(URI.create(serviceURI),System.currentTimeMillis());
 							addToMap(serviceName,u);
 							URI[] u1=knownUrisOf(serviceName);
+							long[] ts=knownTSOf(serviceName);
 							for(int i=0;i<u1.length;i++) {
-								System.out.print(u1[i]+", ");
+								System.out.print(u1[i]+" "+ts[i]+", ");
 								System.out.println("----------------------------");
 							}
 						}
@@ -131,6 +132,19 @@ public class Discovery {
 		
 		return res;
 	}	
+	private long[] knownTSOf(String serviceName) {
+		List<URIClass> list=uri.get(serviceName);
+		long[] res=new long[list.size()];
+		int counter=0;
+		if(list!=null) {
+			for(URIClass i : list) {
+				res[counter]=i.getTimestamp();
+				counter++;
+			}
+		}
+		
+		return res;
+	}	
 	
 	private void addToMap(String serviceName,URIClass u){
 		List<URIClass> uvec=new ArrayList<>();
@@ -139,14 +153,23 @@ public class Discovery {
 		}
 		else {
 			uvec=uri.get(serviceName);
-			System.out.println(serviceName);
 			try { 
-				uvec.get(uvec.indexOf(u)).setTimeStamp();}
+				if(hasURI(uvec,u.getURI())!=-1) {
+					uvec.get(hasURI(uvec,u.getURI())).setTimeStamp();
+				}}
 			catch(Exception e) {
 				uvec.add(u);
 			}
 		}
 		uri.put(serviceName, uvec);
+	}
+	private int hasURI(List<URIClass> u,URI u1) {
+		String u2=u1.toString();
+		for(int i=0;i<u.size();i++) {
+			String u3=u.get(i).getURI().toString();
+			if(u3.equals(u2)) return i;
+		}
+		return -1;
 	}
 	
 	
