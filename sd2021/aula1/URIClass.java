@@ -10,14 +10,14 @@ public class URIClass {
 		this.timestamp=timestamp;
 		
 	}
-	public void setTimestamp() {
-		timestamp=System.currentTimeMillis();
-	}
 	public URI getURI()
 	{
 		return u;
 	}
 	public long getTimestamp() {
 		return timestamp;
+	}
+	public void setTimeStamp() {
+		timestamp=System.currentTimeMillis();
 	}
 }

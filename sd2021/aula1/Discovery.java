@@ -133,17 +133,24 @@ public class Discovery {
 	}	
 	
 	private void addToMap(String serviceName,URIClass u){
-		List<URIClass> uvec=uri.get(serviceName);
-		List<URIClass> newVec=new ArrayList<>();
-		
-		if(uvec!=null) { 
-			newVec=uvec;
-			if(!newVec.contains(u)) newVec.add(u);
+		List<URIClass> uvec=new ArrayList<>();
+		if(uri.get(serviceName)==null) {
+			uvec.add(u);
 		}
-		else newVec.add(u);
-		
-		uri.put(serviceName,newVec);
+		else {
+			uvec=uri.get(serviceName);
+			System.out.println(serviceName);
+			try { 
+				uvec.get(uvec.indexOf(u)).setTimeStamp();}
+			catch(Exception e) {
+				uvec.add(u);
+			}
+		}
+		uri.put(serviceName, uvec);
 	}
+	
+	
+	
 	// Main just for testing purposes
 	public static void main( String[] args) throws Exception {
 		Discovery discovery = new Discovery( DISCOVERY_ADDR, "test", "http://" + InetAddress.getLocalHost().getHostAddress());
