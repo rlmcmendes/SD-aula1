@@ -23,7 +23,7 @@ import java.util.logging.Logger;
  */
 public class Discovery {
 	private static Logger Log = Logger.getLogger(Discovery.class.getName());
-	private Map<String,List<URI>> uri;
+	private Map<String,List<URIClass>> uri;
 
 	static {
 		// addresses some multicast issues on some TCP/IP stacks
@@ -93,7 +93,7 @@ public class Discovery {
 						if( msgElems.length == 2) {	//periodic announcement
 							System.out.printf( "FROM %s (%s) : %s\n", pkt.getAddress().getCanonicalHostName(), 
 									pkt.getAddress().getHostAddress(), msg);
-							URI u=URI.create(serviceURI);
+							URIClass u=new URIClass(URI.create(serviceURI),System.currentTimeMillis());
 							addToMap(serviceName,u);
 							URI[] u1=knownUrisOf(serviceName);
 							for(int i=0;i<u1.length;i++) {
@@ -119,12 +119,12 @@ public class Discovery {
 	 * 
 	 */
 	public URI[] knownUrisOf(String serviceName) {
-		List<URI> list=uri.get(serviceName);
+		List<URIClass> list=uri.get(serviceName);
 		URI[] res=new URI[list.size()];
 		int counter=0;
 		if(list!=null) {
-			for(URI i : list) {
-				res[counter]=i;
+			for(URIClass i : list) {
+				res[counter]=i.getURI();
 				counter++;
 			}
 		}
@@ -132,9 +132,9 @@ public class Discovery {
 		return res;
 	}	
 	
-	private void addToMap(String serviceName,URI u){
-		List<URI> uvec=uri.get(serviceName);
-		List<URI> newVec=new ArrayList<>();
+	private void addToMap(String serviceName,URIClass u){
+		List<URIClass> uvec=uri.get(serviceName);
+		List<URIClass> newVec=new ArrayList<>();
 		
 		if(uvec!=null) { 
 			newVec=uvec;
